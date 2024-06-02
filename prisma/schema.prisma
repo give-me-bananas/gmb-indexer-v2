@@ -18,3 +18,25 @@ model LatestBlockNumber {
   blockNumber Int @id
   blockHash String
 }
+
+model TransferLatestBlockNumber {
+  blockNumber Int @id
+  blockHash String
+}
+
+model DonationHistory {
+  id    Int     @id @default(autoincrement())
+  blockNumber Int
+  donor String  
+  recipient String  
+  erc20TokenAddress String
+  netDonation String
+  commission String
+  donorName String
+  message String
+}
+
+model AddressMapping {
+  address String @id
+  smartAddress String
+}

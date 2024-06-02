@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "ts-node ./src/index.ts",
+    "start-block": "ts-node ./indexers/block-indexer.ts",
+    "start-transfer": "ts-node ./indexers/transfer-indexer.ts",
     "api": "ts-node ./src/api.ts"
   },
   "keywords": [],
