@@ -4,6 +4,7 @@ import { BigNumber, Contract, ethers, utils } from "ethers";
 import { getLatestStoredBlock } from "./block-indexer";
 import * as BananaController from "../BananaController.json";
 import { AbiCoder } from "ethers/lib/utils";
+import { normalizeL1ContractAddress } from "../utils";
 
 const rpcUrl = process.env.RPC_URL!;
 const maxNumberOfBlockToIndex = parseInt(
@@ -142,13 +143,6 @@ async function main(db: PrismaClient, provider: JsonRpcProvider) {
 
   await main(prisma, provider);
 })();
-
-export function normalizeL1ContractAddress(address: string) {
-  return utils.hexZeroPad(
-    BigNumber.from(address).toHexString().toLowerCase(),
-    20
-  );
-}
 
 async function getLatestStoredTransferBlock(db: PrismaClient) {
   const latestBlock = await db.transferLatestBlockNumber.findFirst({

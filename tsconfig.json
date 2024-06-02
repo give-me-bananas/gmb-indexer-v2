@@ -27,6 +27,6 @@
       "downlevelIteration": true
     },
     "exclude": ["node_modules"],
-    "include": ["./src/**/*.ts", "./src/**/*.json"]
+    "include": ["./api/**/*.ts", "./*.json", "./utils/**/*.ts", "./indexers/**/*.ts"]
   }
   

@@ -5,7 +5,7 @@
   "scripts": {
     "start-block": "ts-node ./indexers/block-indexer.ts",
     "start-transfer": "ts-node ./indexers/transfer-indexer.ts",
-    "api": "ts-node ./src/api.ts"
+    "api": "ts-node ./api/index.ts"
   },
   "keywords": [],
   "author": "",
