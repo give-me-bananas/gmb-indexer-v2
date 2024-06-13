@@ -5,6 +5,7 @@ import { getLatestStoredBlock } from "./block-indexer";
 import * as BananaController from "../BananaController.json";
 import { AbiCoder } from "ethers/lib/utils";
 import { normalizeL1ContractAddress } from "../utils";
+import { Erc20TokenDetail } from "../api/types";
 
 const rpcUrl = process.env.RPC_URL!;
 const maxNumberOfBlockToIndex = parseInt(
@@ -15,8 +16,25 @@ const indexFromBlockNumber = parseInt(
 );
 const bananaControllerAddress = process.env.BANANA_CONTROLLER_ADDRESS!;
 const notificationBaseUrl = process.env.NOTIFICATION_BASE_URL!;
+const supportedErc20TokenAddress =
+  process.env.SUPPORTED_ERC20_TOKEN_ADDRESS!.split(",");
+const supportedErc20TokenSymbol =
+  process.env.SUPPORTED_ERC20_TOKEN_SYMBOL!.split(",");
+const supportedErc20TokenDecimal =
+  process.env.SUPPORTED_ERC20_TOKEN_DECIMAL!.split(",");
 
 const abi = BananaController.abi;
+
+const erc20TokenDetailMapping: Map<string, Erc20TokenDetail> = new Map();
+for (let i = 0; i < supportedErc20TokenAddress.length; i++) {
+  erc20TokenDetailMapping.set(
+    normalizeL1ContractAddress(supportedErc20TokenAddress[i]),
+    {
+      symbol: supportedErc20TokenSymbol[i],
+      decimal: parseInt(supportedErc20TokenDecimal[i]),
+    }
+  );
+}
 
 async function main(db: PrismaClient, provider: JsonRpcProvider) {
   const bananaControllerContract = new Contract(
@@ -114,6 +132,7 @@ async function main(db: PrismaClient, provider: JsonRpcProvider) {
           erc20TokenAddress: erc20TokenAddress,
           netDonation: netDonation.toString(),
           commission: commission.toString(),
+          totalDonation: netDonation.add(commission),
           donorName,
           message,
         });
@@ -126,15 +145,16 @@ async function main(db: PrismaClient, provider: JsonRpcProvider) {
         donationHistories
       );
 
-      // // notify streamer of incoming alert
-      // await notifyStreamer(
-      //   erc20TokenAddress,
-      //   recipient,
-      //   donorName,
-      //   message,
-      //   netDonation.add(commission)
-      // );
-      // }
+      donationHistories.map(async (d) => {
+        // notify streamer of incoming alert
+        await notifyStreamer(
+          d.erc20TokenAddress,
+          d.recipient,
+          d.donorName,
+          d.message,
+          d.totalDonation
+        );
+      });
     }
   }
 }
@@ -229,6 +249,7 @@ type DonationHistory = {
   erc20TokenAddress: string;
   netDonation: string;
   commission: string;
+  totalDonation: BigNumber;
   donorName: string;
   message: string;
 };
