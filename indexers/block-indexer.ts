@@ -66,10 +66,10 @@ async function main(db: PrismaClient, provider: JsonRpcProvider) {
 }
 
 (async () => {
-  console.log("Start indexing");
+  console.log("Start indexing block-indexer");
   const prisma = new PrismaClient();
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-  await main(prisma, provider);
+  // await main(prisma, provider);
 })();
 
 export async function getLatestStoredBlock(db: PrismaClient) {

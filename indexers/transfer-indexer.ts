@@ -102,6 +102,9 @@ async function main(db: PrismaClient, provider: JsonRpcProvider) {
         const donorName: string = values[2];
         const message: string = values[3];
 
+        console.log(
+          `At block ${blockNumber}, ${donor} has donated ${netDonation}`
+        );
         donationHistories.push({
           blockNumber,
           blockHash: storeBlockAt.blockHash,
@@ -136,7 +139,7 @@ async function main(db: PrismaClient, provider: JsonRpcProvider) {
 }
 
 (async () => {
-  console.log("Start indexing");
+  console.log("Start indexing transfer-indexer");
 
   const prisma = new PrismaClient();
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
@@ -164,6 +167,7 @@ async function getStoredBlockAt(db: PrismaClient, blockNumber: number) {
   return block;
 }
 async function handleReorg(db: PrismaClient, reorgFromBlockNumber: number) {
+  console.log(`Reorg occur from ${reorgFromBlockNumber}`);
   await db.$transaction([
     db.transferLatestBlockNumber.deleteMany({
       where: {
