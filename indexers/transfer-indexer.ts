@@ -125,15 +125,15 @@ async function main(db: PrismaClient, provider: JsonRpcProvider) {
         donationHistories
       );
 
-      //     // notify streamer of incoming alert
-      //     await notifyStreamer(
-      //       erc20TokenAddress,
-      //       recipient,
-      //       donorName,
-      //       message,
-      //       netDonation.add(commission)
-      //     );
-      //   }
+          // notify streamer of incoming alert
+          await notifyStreamer(
+            erc20TokenAddress,
+            recipient,
+            donorName,
+            message,
+            netDonation.add(commission)
+          );
+        }
     }
   }
 }
@@ -232,40 +232,40 @@ type DonationHistory = {
   message: string;
 };
 
-// async function notifyStreamer(
-//   erc20TokenAddress: string,
-//   streamerAddress: string,
-//   donorName: string,
-//   message: string,
-//   amount: BigNumber
-// ) {
-//   // /users/:userId/alerts
-//   const url = new URL(`users/${streamerAddress}/alerts`, notificationBaseUrl);
+async function notifyStreamer(
+  erc20TokenAddress: string,
+  streamerAddress: string,
+  donorName: string,
+  message: string,
+  amount: BigNumber
+) {
+  // /users/:userId/alerts
+  const url = new URL(`users/${streamerAddress}/alerts`, notificationBaseUrl);
 
-//   const erc20Detail = erc20TokenDetailMapping.get(
-//     normalizeL1ContractAddress(erc20TokenAddress)
-//   )!;
-//   if (erc20Detail === undefined) {
-//     // Do nothing if not tracking it.
-//     return;
-//   }
+  const erc20Detail = erc20TokenDetailMapping.get(
+    normalizeL1ContractAddress(erc20TokenAddress)
+  )!;
+  if (erc20Detail === undefined) {
+    // Do nothing if not tracking it.
+    return;
+  }
 
-//   const divisor = BigNumber.from(10).pow(erc20Detail.decimal);
-//   const normalizedAmount = amount.div(divisor);
+  const divisor = BigNumber.from(10).pow(erc20Detail.decimal);
+  const normalizedAmount = amount.div(divisor);
 
-//   const data = {
-//     senderName: donorName,
-//     message,
-//     tipAmount: `${erc20Detail.symbol}${normalizedAmount}`,
-//   };
+  const data = {
+    senderName: donorName,
+    message,
+    tipAmount: `${erc20Detail.symbol}${normalizedAmount}`,
+  };
 
-//   const customHeaders = {
-//     "Content-Type": "application/json",
-//   };
+  const customHeaders = {
+    "Content-Type": "application/json",
+  };
 
-//   const response = await fetch(url, {
-//     method: "POST",
-//     headers: customHeaders,
-//     body: JSON.stringify(data),
-//   });
-// }
+  const response = await fetch(url, {
+    method: "POST",
+    headers: customHeaders,
+    body: JSON.stringify(data),
+  });
+}
