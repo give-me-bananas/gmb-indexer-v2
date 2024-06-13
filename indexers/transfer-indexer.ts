@@ -14,6 +14,7 @@ const indexFromBlockNumber = parseInt(
   process.env.INDEX_FROM_BLOCK_NUMBER ?? "0"
 );
 const bananaControllerAddress = process.env.BANANA_CONTROLLER_ADDRESS!;
+const notificationBaseUrl = process.env.NOTIFICATION_BASE_URL!;
 
 const abi = BananaController.abi;
 
@@ -125,15 +126,15 @@ async function main(db: PrismaClient, provider: JsonRpcProvider) {
         donationHistories
       );
 
-          // notify streamer of incoming alert
-          await notifyStreamer(
-            erc20TokenAddress,
-            recipient,
-            donorName,
-            message,
-            netDonation.add(commission)
-          );
-        }
+      // // notify streamer of incoming alert
+      // await notifyStreamer(
+      //   erc20TokenAddress,
+      //   recipient,
+      //   donorName,
+      //   message,
+      //   netDonation.add(commission)
+      // );
+      // }
     }
   }
 }
